@@ -1,6 +1,7 @@
-
 import type { Metadata } from "next";
 import "./globals.css";
+import { CartProvider } from "@/context/CartContext";
+import Header from "@/components/Header";
 
 export const metadata: Metadata = {
   title: "Paradise Soap | بارادايس سوب - منتجات صابون طبيعية فاخرة",
@@ -16,7 +17,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <CartProvider>
+          <Header />
+          {children}
+        </CartProvider>
+      </body>
     </html>
   );
 }
