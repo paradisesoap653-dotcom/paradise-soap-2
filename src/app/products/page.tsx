@@ -1,4 +1,3 @@
-import { db } from "@/db";
 import { products } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import Link from "next/link";
@@ -7,6 +6,8 @@ import Image from "next/image";
 export const dynamic = "force-dynamic";
 
 export default async function ProductsPage() {
+  const { db } = await import("@/db");
+
   const allProducts = await db
     .select()
     .from(products)
@@ -25,7 +26,7 @@ export default async function ProductsPage() {
 
       {allProducts.length === 0 ? (
         <p className="text-center text-[#2e2a24]/60">
-          لا توجد منتجات متاحة حاليًا.
+          لا توجد منتجات متاحة ح��ليًا.
         </p>
       ) : (
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">

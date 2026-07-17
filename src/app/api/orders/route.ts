@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { db } from "@/db";
 import { orders, products } from "@/db/schema";
 import { eq, sql } from "drizzle-orm";
 
 export async function POST(request: Request) {
   try {
+    const { db } = await import("@/db");
+
     const body = await request.json();
     const {
       customerName,
@@ -69,6 +70,7 @@ export async function POST(request: Request) {
 
 export async function GET() {
   try {
+    const { db } = await import("@/db");
     const allOrders = await db.select().from(orders).orderBy(orders.createdAt);
     return NextResponse.json(allOrders);
   } catch (error: any) {
