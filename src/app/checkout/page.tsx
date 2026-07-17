@@ -71,7 +71,7 @@ export default function CheckoutPage() {
   return (
     <main className="mx-auto max-w-2xl px-6 py-16">
       <h1 className="mb-8 text-3xl font-bold text-[#2e2a24]">إتمام الطلب</h1>
-
+      
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
           <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
