@@ -47,7 +47,7 @@ const faqs = [
 
 export default function HomePage() {
   return (
-    <main>
+    <<main>
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#faf6f0] to-white px-6 py-24 text-center">
         <div className="mx-auto max-w-3xl animate-fade-in">
