@@ -20,7 +20,7 @@ export default function CheckoutPage() {
   const [error, setError] = useState("");
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<any>
   ) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
@@ -74,9 +74,7 @@ export default function CheckoutPage() {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
-            الاسم بالكامل *
-          </label>
+          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">الاسم بالكامل *</label>
           <input
             required
             name="customerName"
@@ -87,9 +85,7 @@ export default function CheckoutPage() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
-            رقم الهاتف *
-          </label>
+          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">رقم الهاتف *</label>
           <input
             required
             name="customerPhone"
@@ -100,9 +96,7 @@ export default function CheckoutPage() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
-            البريد الإلكتروني (اختياري)
-          </label>
+          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">البريد الإلكتروني (اختياري)</label>
           <input
             type="email"
             name="customerEmail"
@@ -113,9 +107,7 @@ export default function CheckoutPage() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
-            المنطقة / الحي *
-          </label>
+          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">المنطقة / الحي *</label>
           <input
             required
             name="districtAr"
@@ -126,9 +118,7 @@ export default function CheckoutPage() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
-            تفاصيل العنوان
-          </label>
+          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">تفاصيل العنوان</label>
           <textarea
             name="addressDetails"
             value={form.addressDetails}
@@ -139,9 +129,7 @@ export default function CheckoutPage() {
         </div>
 
         <div>
-          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
-            طريقة الدفع
-          </label>
+          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">طريقة الدفع</label>
           <select
             name="paymentMethod"
             value={form.paymentMethod}
@@ -154,9 +142,7 @@ export default function CheckoutPage() {
         </div>
 
         <div className="rounded-xl bg-[#faf6f0] p-4">
-          <p className="text-lg font-bold text-[#2e2a24]">
-            الإجمالي: {(totalPrice / 100).toFixed(2)} ج.م
-          </p>
+          <p className="text-lg font-bold text-[#2e2a24]">الإجمالي: {(totalPrice / 100).toFixed(2)} ج.م</p>
         </div>
 
         {error && <p className="text-red-600">{error}</p>}
@@ -171,4 +157,4 @@ export default function CheckoutPage() {
       </form>
     </main>
   );
-    }
+}
