@@ -20,7 +20,9 @@ export default function CheckoutPage() {
   const [error, setError] = useState("");
 
   function handleChange(
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) {
+    
   ) {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
