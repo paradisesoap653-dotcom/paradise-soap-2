@@ -5,10 +5,15 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Paradise Soap | بارادايس سوب - منتجات صابون طبيعية فاخرة",
+  title: "Paradise Soap | صابون طبيعية فاخرة",
   description:
-    "متجر Paradise Soap لمنتجات الصابون الطبيعي الفاخر. صابون يدوي بمكونات طبيعية 100%، مثالي للعناية ببشرتك.",
-  keywords: ["صابون طبيعي", "صابون يدوي", "natural soap", "handmade soap", "Paradise Soap", "بارادايس سوب"],
+    "متجر Paradise Soap مثالي للعناية ببشرتك، 100% طبيعي، صناعة يدوية",
+  keywords: ["صابون طبيعي", "صابون يدوي", "Paradise Soap"],
+  manifest: "/manifest.json",
+};
+
+export const viewport = {
+  themeColor: "#5B21B6",
 };
 
 export default function RootLayout({
