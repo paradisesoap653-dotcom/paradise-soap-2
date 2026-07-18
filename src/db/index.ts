@@ -24,36 +24,42 @@ function getConnectionString(): string | undefined {
   return undefined;
 }
 
-const connectionString = getConnectionString();
-const disableSSL =
-  process.env.POSTGRES_NO_SSL === "true" || process.env.PGSSLMODE === "disable";
+let db: any = null;
 
-export let db: any;
+export function getDb() {
+  if (db) return db;
 
-if (!connectionString) {
-  db = new Proxy(
-    {},
-    {
-      get() {
-        throw new Error(
-          "Database connection is not configured. Set DATABASE_URL or related env vars."
-        );
-      },
+  const connectionString = getConnectionString();
+  const disableSSL =
+    process.env.POSTGRES_NO_SSL === "true" || process.env.PGSSLMODE === "disable";
+
+  if (!connectionString) {
+    db = new Proxy(
+      {},
+      {
+        get() {
+          throw new Error(
+            "Database connection is not configured. Set DATABASE_URL or related env vars."
+          );
+        },
+      }
+    );
+  } else {
+    const poolConfig: any = { connectionString };
+    if (!disableSSL) {
+      poolConfig.ssl = { rejectUnauthorized: false };
     }
-  );
-} else {
-  const poolConfig: any = { connectionString };
-  if (!disableSSL) {
-    poolConfig.ssl = { rejectUnauthorized: false };
-  }
 
-  // @ts-ignore
-  if (!globalThis.__paradise_pg_pool) {
     // @ts-ignore
-    globalThis.__paradise_pg_pool = new Pool(poolConfig);
+    if (!globalThis.__paradise_pg_pool) {
+      // @ts-ignore
+      globalThis.__paradise_pg_pool = new Pool(poolConfig);
+    }
+
+    // @ts-ignore
+    const pool: Pool = globalThis.__paradise_pg_pool;
+    db = drizzle(pool, { schema });
   }
 
-  // @ts-ignore
-  const pool: Pool = globalThis.__paradise_pg_pool;
-  db = drizzle(pool, { schema });
+  return db;
 }
