@@ -4,7 +4,8 @@ import { eq } from "drizzle-orm";
 
 export async function GET() {
   try {
-    const { db } = await import("@/db");
+    const { getDb } = await import("@/db");
+    const db = getDb();
     const allProducts = await db.select().from(products);
     return NextResponse.json(allProducts);
   } catch (error: any) {
@@ -17,7 +18,8 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const { db } = await import("@/db");
+    const { getDb } = await import("@/db");
+    const db = getDb();
 
     const body = await request.json();
     const {
@@ -63,7 +65,8 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   try {
-    const { db } = await import("@/db");
+    const { getDb } = await import("@/db");
+    const db = getDb();
 
     const body = await request.json();
     const { id, ...updates } = body;
@@ -89,7 +92,8 @@ export async function PATCH(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const { db } = await import("@/db");
+    const { getDb } = await import("@/db");
+    const db = getDb();
 
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");

@@ -59,7 +59,8 @@ export default async function ProductDetailPage({
 
   try {
     if (process.env.DATABASE_URL) {
-      const { db } = await import("@/db");
+      const { getDb } = await import("@/db");
+      const db = getDb();
       const [dbProduct] = await db
         .select()
         .from(products)
