@@ -50,7 +50,8 @@ export default async function ProductsPage() {
   // Try to load from DB at runtime; if it fails or DATABASE_URL is not set, fall back to mock data
   try {
     if (process.env.DATABASE_URL) {
-      const { db } = await import("@/db");
+      const { getDb } = await import("@/db");
+      const db = getDb();
       const rows = await db
         .select()
         .from(products)
