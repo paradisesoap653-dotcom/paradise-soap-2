@@ -50,14 +50,11 @@ export function getDb() {
       poolConfig.ssl = { rejectUnauthorized: false };
     }
 
-    // @ts-ignore
     if (!globalThis.__paradise_pg_pool) {
-      // @ts-ignore
       globalThis.__paradise_pg_pool = new Pool(poolConfig);
     }
 
-    // @ts-ignore
-    const pool: Pool = globalThis.__paradise_pg_pool;
+    const pool = globalThis.__paradise_pg_pool;
     db = drizzle(pool, { schema });
   }
 
