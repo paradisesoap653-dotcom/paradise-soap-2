@@ -47,17 +47,15 @@ if (!connectionString) {
     poolConfig.ssl = { rejectUnauthorized: false };
   }
 
-  // حفظ الـ Pool في النطاق العالمي لمنع استهلاك الاتصالات في Vercel
   if (!(globalThis as any).__paradise_pg_pool) {
     (globalThis as any).__paradise_pg_pool = new Pool(poolConfig);
   }
   pool = (globalThis as any).__paradise_pg_pool;
 }
 
-// 1. تصدير المتغير db في المستوى الأعلى ليعمل مع صفحة المنتجات وبقية صفحات المتجر
+// التصدير هنا في المستوى الخارجي تماماً بعد إغلاق كافة الأقواس الشريطة
 export const db = drizzle(pool, { schema });
 
-// 2. تصدير الدالة getDb أيضاً لضمان عدم تعطل أي كود قديم يعتمد عليها
 export function getDb() {
   return db;
 }
