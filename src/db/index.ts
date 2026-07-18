@@ -24,39 +24,40 @@ function getConnectionString(): string | undefined {
   return undefined;
 }
 
-let db: any = null;
+const connectionString = getConnectionString();
+const disableSSL =
+  process.env.POSTGRES_NO_SSL === "true" || process.env.PGSSLMODE === "disable";
 
-export function getDb() {
-  if (db) return db;
+let pool: any;
 
-  const connectionString = getConnectionString();
-  const disableSSL =
-    process.env.POSTGRES_NO_SSL === "true" || process.env.PGSSLMODE === "disable";
-
-  if (!connectionString) {
-    db = new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(
-            "Database connection is not configured. Set DATABASE_URL or related env vars."
-          );
-        },
-      }
-    );
-  } else {
-    const poolConfig: any = { connectionString };
-    if (!disableSSL) {
-      poolConfig.ssl = { rejectUnauthorized: false };
+if (!connectionString) {
+  pool = new Proxy(
+    {},
+    {
+      get() {
+        throw new Error(
+          "Database connection is not configured. Set DATABASE_URL or related env vars."
+        );
+      },
     }
-
-    if (!globalThis.__paradise_pg_pool) {
-      globalThis.__paradise_pg_pool = new Pool(poolConfig);
-    }
-
-    const pool = globalThis.__paradise_pg_pool;
-    db = drizzle(pool, { schema });
+  );
+} else {
+  const poolConfig: any = { connectionString };
+  if (!disableSSL) {
+    poolConfig.ssl = { rejectUnauthorized: false };
   }
 
+  // حفظ الـ Pool في النطاق العالمي لمنع استهلاك الاتصالات في Vercel
+  if (!(globalThis as any).__paradise_pg_pool) {
+    (globalThis as any).__paradise_pg_pool = new Pool(poolConfig);
+  }
+  pool = (globalThis as any).__paradise_pg_pool;
+}
+
+// 1. تصدير المتغير db في المستوى الأعلى ليعمل مع صفحة المنتجات وبقية صفحات المتجر
+export const db = drizzle(pool, { schema });
+
+// 2. تصدير الدالة getDb أيضاً لضمان عدم تعطل أي كود قديم يعتمد عليها
+export function getDb() {
   return db;
 }
