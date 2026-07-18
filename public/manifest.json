@@ -1,0 +1,17 @@
+{
+  "name": "Paradise Soap",
+  "short_name": "Paradise Soap",
+  "description": "متجر صابون طبيعي 100% صناعة يدوية",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#5B21B6",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
