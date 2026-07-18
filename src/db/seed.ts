@@ -1,9 +1,11 @@
 
-import { db } from "./index";
+import { getDb } from "./index";
 import { products } from "./schema";
 
 async function seed() {
   console.log("🌱 بدء إضافة المنتجات التجريبية...");
+
+  const db = getDb();
 
   await db.insert(products).values([
     {
