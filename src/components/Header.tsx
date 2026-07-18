@@ -9,6 +9,10 @@ export default function Header() {
   const [installPrompt, setInstallPrompt] = useState<any>(null);
 
   useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("/sw.js").catch(() => {});
+    }
+
     const handler = (e: any) => {
       e.preventDefault();
       setInstallPrompt(e);
