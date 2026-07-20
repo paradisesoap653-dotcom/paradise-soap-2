@@ -10,10 +10,15 @@ export const metadata: Metadata = {
     "متجر Paradise Soap مثالي للعناية ببشرتك، 100% طبيعي، صناعة يدوية",
   keywords: ["صابون طبيعي", "صابون يدوي", "Paradise Soap"],
   manifest: "/manifest.json",
+  icons: {
+    icon: "/paradise-icon-192.png",
+    shortcut: "/paradise-icon-192.png",
+    apple: "/paradise-icon-512.png",
+  },
 };
 
 export const viewport = {
-  themeColor: "#5B21B6",
+  themeColor: "#D81BC9",
 };
 
 export default function RootLayout({
