@@ -17,6 +17,7 @@ export default function AdminPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({
     nameAr: "",
     nameEn: "",
@@ -38,6 +39,33 @@ export default function AdminPage() {
   useEffect(() => {
     loadProducts();
   }, []);
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (data.url) {
+        setForm((prev) => ({ ...prev, imageUrl: data.url }));
+      } else {
+        alert("فشل رفع الصورة، حاول مرة أخرى");
+      }
+    } catch (err) {
+      alert("حدث خطأ أثناء رفع الصورة");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   async function handleAddProduct(e: React.FormEvent) {
     e.preventDefault();
@@ -117,7 +145,7 @@ export default function AdminPage() {
             className="w-full rounded-lg border border-[#2e2a24]/20 px-4 py-2"
             rows={2}
           />
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2">
             <input
               required
               type="number"
@@ -134,16 +162,38 @@ export default function AdminPage() {
               onChange={(e) => setForm({ ...form, stock: e.target.value })}
               className="rounded-lg border border-[#2e2a24]/20 px-4 py-2"
             />
-            <input
-              placeholder="رابط الصورة"
-              value={form.imageUrl}
-              onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-              className="rounded-lg border border-[#2e2a24]/20 px-4 py-2"
-            />
           </div>
+
+          {/* Image Upload */}
+          <div className="rounded-lg border border-dashed border-[#2e2a24]/30 p-4">
+            <label className="mb-2 block text-sm font-medium text-[#2e2a24]">
+              صورة المنتج
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+              disabled={uploading}
+              className="w-full text-sm text-[#2e2a24]/70"
+            />
+            {uploading && (
+              <p className="mt-2 text-sm text-[#8a9a5b]">جاري رفع الصورة...</p>
+            )}
+            {form.imageUrl && !uploading && (
+              <div className="mt-3">
+                <img
+                  src={form.imageUrl}
+                  alt="معاينة"
+                  className="h-32 w-32 rounded-lg object-cover"
+                />
+              </div>
+            )}
+          </div>
+
           <button
             type="submit"
-            className="rounded-full bg-[#5f6e3c] px-6 py-2 font-medium text-white"
+            disabled={uploading}
+            className="rounded-full bg-[#5f6e3c] px-6 py-2 font-medium text-white disabled:opacity-50"
           >
             حفظ المنتج
           </button>
