@@ -10,7 +10,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "لم يتم اختيار ملف" }, { status: 400 });
     }
 
-    // هنا السطر المعدل والمضمون 100%
+    // الكود الصحيح والمعدل بعلامات الـ Backticks
     const blob = await put(`products/${Date.now()}-${file.name}`, file, {
       access: "public",
     });
