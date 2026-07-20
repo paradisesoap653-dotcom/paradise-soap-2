@@ -122,7 +122,7 @@ export default function AdminPage() {
               required
               type="number"
               step="0.01"
-              placeholder="السعر (ج.م)"
+              placeholder="السعر (ج.س)"
               value={form.price}
               onChange={(e) => setForm({ ...form, price: e.target.value })}
               className="rounded-lg border border-[#2e2a24]/20 px-4 py-2"
@@ -162,7 +162,7 @@ export default function AdminPage() {
               <div>
                 <p className="font-semibold text-[#2e2a24]">{p.nameAr}</p>
                 <p className="text-sm text-[#2e2a24]/60">
-                  {(p.price / 100).toFixed(2)} ج.م · مخزون: {p.stock}
+                  {(p.price / 100).toFixed(2)} ج.س · مخزون: {p.stock}
                 </p>
               </div>
               <button
