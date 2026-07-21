@@ -32,32 +32,6 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-[#2e2a24]/10 bg-[#faf6f0]">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
-        <Link href="/" className="flex items-center">
-          <Image
-            src="/logo.png"
-            alt="Paradise Soap"
-            width={48}
-            height={48}
-            className="h-12 w-12 rounded-full object-cover"
-            priority
-          />
-        </Link>
-
-        <nav className="hidden gap-8 sm:flex">
-          <Link href="/" className="text-[#2e2a24]/80 hover:text-[#2e2a24]">
-            الرئيسية
-          </Link>
-          <Link href="/products" className="text-[#2e2a24]/80 hover:text-[#2e2a24]">
-            المنتجات
-          </Link>
-          <Link href="/about" className="text-[#2e2a24]/80 hover:text-[#2e2a24]">
-            من نحن
-          </Link>
-          <Link href="/contact" className="text-[#2e2a24]/80 hover:text-[#2e2a24]">
-            تواصل معنا
-          </Link>
-        </nav>
-
         <div className="flex items-center gap-3">
           {installPrompt && (
             <button
@@ -85,6 +59,32 @@ export default function Header() {
             )}
           </Link>
         </div>
+
+        <nav className="hidden gap-8 sm:flex">
+          <Link href="/" className="text-[#2e2a24]/80 hover:text-[#2e2a24]">
+            الرئيسية
+          </Link>
+          <Link href="/products" className="text-[#2e2a24]/80 hover:text-[#2e2a24]">
+            المنتجات
+          </Link>
+          <Link href="/about" className="text-[#2e2a24]/80 hover:text-[#2e2a24]">
+            من نحن
+          </Link>
+          <Link href="/contact" className="text-[#2e2a24]/80 hover:text-[#2e2a24]">
+            تواصل معنا
+          </Link>
+        </nav>
+
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/logo.png"
+            alt="Paradise Soap"
+            width={48}
+            height={48}
+            className="h-12 w-12 rounded-full object-cover"
+            priority
+          />
+        </Link>
       </div>
     </header>
   );
