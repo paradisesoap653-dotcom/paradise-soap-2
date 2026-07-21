@@ -45,30 +45,70 @@ const faqs = [
   },
 ];
 
+const stats = [
+  { value: "100%", label: "طبيعي" },
+  { value: "500+", label: "عميل سعيد" },
+  { value: "٥", label: "نجوم تقييم" },
+];
+
 export default function HomePage() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#faf6f0] to-white px-6 py-24 text-center">
-        <div className="mx-auto max-w-3xl animate-fade-in">
-          <span className="mb-4 inline-block rounded-full bg-[#8a9a5b]/10 px-4 py-1 text-sm font-medium text-[#5f6e3c]">
-            طبيعي 100% • صناعة يدوية
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#5f6e3c] via-[#8a9a5b] to-[#c9a876] px-6 py-28 text-center sm:py-36">
+        {/* Decorative blurred shapes */}
+        <div className="pointer-events-none absolute -top-24 -right-24 h-72 w-72 rounded-full bg-white/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-[#faf6f0]/10 blur-3xl" />
+        <div className="pointer-events-none absolute top-1/3 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-white/5 blur-2xl" />
+
+        <div className="relative mx-auto max-w-3xl animate-fade-in">
+          <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-5 py-1.5 text-sm font-medium text-white backdrop-blur-sm">
+            ✦ طبيعي 100% · صناعة يدوية فاخرة
           </span>
-          <h1 className="mb-6 text-4xl font-bold leading-tight text-[#2e2a24] sm:text-5xl">
+
+          <h1 className="mb-4 font-serif text-5xl font-bold leading-tight text-white drop-shadow-sm sm:text-6xl">
             Paradise Soap
-            <span className="block text-2xl text-[#8a9a5b]/80 sm:text-3xl">بارادايس سوب</span>
-            <span className="mt-2 block text-[#8a9a5b]">فخامة طبيعية لبشرتك</span>
           </h1>
-          <p className="mx-auto mb-8 max-w-xl text-lg text-[#2e2a24]/70">
+          <span className="mb-2 block font-serif text-2xl text-white/90 sm:text-3xl">
+            بارادايس سوب
+          </span>
+          <span className="mt-3 block text-xl font-medium text-[#faf6f0] sm:text-2xl">
+            فخامة طبيعية لبشرتك
+          </span>
+
+          <p className="mx-auto mb-10 mt-6 max-w-xl text-lg leading-relaxed text-white/85">
             اكتشف مجموعتنا الفاخرة من الصابون الطبيعي المصنوع يدويًا بأجود
             المكونات الطبيعية، لعناية استثنائية ببشرتك كل يوم.
           </p>
-          <Link
-            href="/products"
-            className="inline-block rounded-full bg-[#8a9a5b] px-8 py-3 text-lg font-medium text-white transition hover:bg-[#5f6e3c]"
-          >
-            تسوق الآن
-          </Link>
+
+          <div className="flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/products"
+              className="inline-block rounded-full bg-white px-9 py-3.5 text-lg font-semibold text-[#5f6e3c] shadow-lg shadow-black/10 transition hover:-translate-y-0.5 hover:shadow-xl"
+            >
+              تسوق الآن
+            </Link>
+            <Link
+              href="/about"
+              className="inline-block rounded-full border-2 border-white/60 px-9 py-3.5 text-lg font-medium text-white transition hover:bg-white/10"
+            >
+              تعرف علينا
+            </Link>
+          </div>
+
+          {/* Stats row */}
+          <div className="mx-auto mt-16 grid max-w-md grid-cols-3 gap-4 border-t border-white/20 pt-8">
+            {stats.map((s) => (
+              <div key={s.label}>
+                <p className="font-serif text-2xl font-bold text-white sm:text-3xl">
+                  {s.value}
+                </p>
+                <p className="mt-1 text-xs text-white/75 sm:text-sm">
+                  {s.label}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
