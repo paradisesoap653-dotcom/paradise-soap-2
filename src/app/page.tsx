@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-// ⚠️ غيّر هذا الرقم إلى رقم الواتساب الخاص بك مسبوقاً بكود الدولة بدون (+)، مثلاً: 249123456789
-const WHATSAPP_NUMBER = "249900000000"; 
+// رقم الواتساب المباشر للطلبات (كود السودان 249)
+const WHATSAPP_NUMBER = "249913009060"; 
 
 interface Product {
   id: number;
@@ -62,9 +62,16 @@ export default function HomePage() {
     <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px", fontFamily: "sans-serif", direction: "rtl" }}>
       
       {/* هيدر المتجر */}
-      <header style={{ textAlign: "center", marginBottom: "30px", borderBottom: "2px solid #eee", paddingBottom: "15px" }}>
-        <h1 style={{ color: "#16a085", fontSize: "28px", margin: "0 0 5px 0" }}>🌿 Paradise Soap</h1>
-        <p style={{ color: "#7f8c8d", margin: 0 }}>متجر الصابون الطبيعي والمنتجات الفاخرة</p>
+      <header style={{ textAlign: "center", marginBottom: "30px", borderBottom: "2px solid #eee", paddingBottom: "20px" }}>
+        <h1 style={{ color: "#16a085", fontSize: "32px", margin: "0 0 5px 0" }}>🌿 Paradise Soap</h1>
+        <p style={{ color: "#7f8c8d", fontSize: "16px", margin: "0 0 15px 0" }}>متجر الصابون الطبيعي والمنتجات الفاخرة</p>
+        
+        {/* معلومات الاتصال بالمتجر */}
+        <div style={{ display: "flex", justifyContent: "center", gap: "15px", flexWrap: "wrap", fontSize: "14px", color: "#555", backgroundColor: "#f9f9f9", padding: "10px", borderRadius: "8px" }}>
+          <span>📞 0913009060</span>
+          <span>📱 0114537190</span>
+          <span>✉️ paradisesoap365@gmail.com</span>
+        </div>
       </header>
 
       {/* حالة التحميل */}
