@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-// رقم الواتساب المباشر للطلبات (كود السودان 249)
-const WHATSAPP_NUMBER = "249913009060"; 
+// رقم الواتساب المباشر (كود السودان 249)
+const WHATSAPP_NUMBER = "249913009060";
 
 interface Product {
   id: number;
@@ -16,40 +16,47 @@ export default function HomePage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // جلب المنتجات تلقائياً من Neon
-  const fetchProducts = async () => {
-    try {
-      const res = await fetch("/api/products");
-      const data = await res.json();
-      if (Array.isArray(data)) {
-        setProducts(data);
-      }
-    } catch (error) {
-      console.error("خطأ في جلب البيانات:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("/api/products");
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            setProducts(data);
+          }
+        }
+      } catch (error) {
+        console.error("خطأ في جلب البيانات:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchProducts();
   }, []);
 
-  // إرسال طلب الشراء مباشرة للواتساب
+  // إرسال طلب الشراء للواتساب مع تشفير النص لمنع أخطاء الروابط
   const handleBuyWhatsApp = (product: Product) => {
-    const message = `مرحباً Paradise Soap 👋%0Aأرغب في طلب المنتج التالي:%0A- *الاسم:* ${product.name}%0A- *السعر:* ${product.price} جنيه%0A- *الرابط:* ${product.image_url}`;
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, "_blank");
+    if (typeof window === "undefined") return;
+    
+    const messageText = `مرحباً Paradise Soap 👋\nأرغب في طلب المنتج التالي:\n- الاسم: ${product.name}\n- السعر: ${product.price} جنيه\n- الرابط: ${product.image_url}`;
+    const encodedMessage = encodeURIComponent(messageText);
+    
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, "_blank");
   };
 
   // حذف المنتج
   const handleDelete = async (id: number) => {
-    if (!confirm("هل أنت متأكد من حذف هذا المنتج؟")) return;
+    if (typeof window !== "undefined") {
+      if (!window.confirm("هل أنت متأكد من حذف هذا المنتج؟")) return;
+    }
 
     try {
       const res = await fetch(`/api/products?id=${id}`, { method: "DELETE" });
       if (res.ok) {
         alert("🗑️ تم حذف المنتج بنجاح!");
-        setProducts(products.filter((p) => p.id !== id));
+        setProducts((prev) => prev.filter((p) => p.id !== id));
       } else {
         alert("❌ حدث خطأ أثناء الحذف");
       }
@@ -61,12 +68,20 @@ export default function HomePage() {
   return (
     <div style={{ maxWidth: "800px", margin: "0 auto", padding: "20px", fontFamily: "sans-serif", direction: "rtl" }}>
       
-      {/* هيدر المتجر */}
+      {/* هيدر المتجر مع الشعار والبيانات */}
       <header style={{ textAlign: "center", marginBottom: "30px", borderBottom: "2px solid #eee", paddingBottom: "20px" }}>
-        <h1 style={{ color: "#16a085", fontSize: "32px", margin: "0 0 5px 0" }}>🌿 Paradise Soap</h1>
-        <p style={{ color: "#7f8c8d", fontSize: "16px", margin: "0 0 15px 0" }}>متجر الصابون الطبيعي والمنتجات الفاخرة</p>
         
-        {/* معلومات الاتصال بالمتجر */}
+        <div style={{ marginBottom: "10px" }}>
+          <img 
+            src="/logo.jpg" 
+            alt="Paradise Soap Logo" 
+            style={{ width: "90px", height: "90px", borderRadius: "50%", objectFit: "cover", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }} 
+          />
+        </div>
+
+        <h1 style={{ color: "#16a085", fontSize: "30px", margin: "0 0 5px 0" }}>🌿 Paradise Soap</h1>
+        <p style={{ color: "#7f8c8d", fontSize: "15px", margin: "0 0 15px 0" }}>متجر الصابون الطبيعي والمنتجات الفاخرة</p>
+        
         <div style={{ display: "flex", justifyContent: "center", gap: "15px", flexWrap: "wrap", fontSize: "14px", color: "#555", backgroundColor: "#f9f9f9", padding: "10px", borderRadius: "8px" }}>
           <span>📞 0913009060</span>
           <span>📱 0114537190</span>
@@ -74,7 +89,7 @@ export default function HomePage() {
         </div>
       </header>
 
-      {/* حالة التحميل */}
+      {/* عرض المنتجات */}
       {loading ? (
         <p style={{ textAlign: "center", color: "#16a085", fontSize: "18px" }}>⏳ جاري تحميل المنتجات...</p>
       ) : products.length === 0 ? (
@@ -82,7 +97,6 @@ export default function HomePage() {
           <p style={{ color: "#888", fontSize: "18px" }}>لا توجد منتجات مضافة حتى الآن.</p>
         </div>
       ) : (
-        /* شبكة عرض المنتجات */
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "20px" }}>
           {products.map((product) => (
             <div 
