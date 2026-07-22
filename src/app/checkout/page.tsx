@@ -142,7 +142,7 @@ export default function CheckoutPage() {
         </div>
 
         <div className="rounded-xl bg-[#faf6f0] p-4">
-          <p className="text-lg font-bold text-[#2e2a24]">الإجمالي: {(totalPrice / 100).toFixed(2)} ج.م</p>
+          <p className="text-lg font-bold text-[#2e2a24]">الإجمالي: {(totalPrice / 100).toFixed(2)} ج.س</p>
         </div>
 
         {error && <p className="text-red-600">{error}</p>}
