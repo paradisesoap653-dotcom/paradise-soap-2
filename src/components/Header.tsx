@@ -34,7 +34,7 @@ export default function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
         <Link href="/" className="flex items-center">
           <Image
-            src="/logo.png.jpg"
+            src="/shoplogo.jpg.jpg"
             alt="Paradise Soap"
             width={48}
             height={48}
