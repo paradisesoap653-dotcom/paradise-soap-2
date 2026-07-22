@@ -80,12 +80,12 @@ export default function AdminOrdersPage() {
               <div className="mb-3 space-y-1 border-t border-[#2e2a24]/10 pt-3">
                 {order.items.map((item, idx) => (
                   <p key={idx} className="text-sm text-[#2e2a24]/80">
-                    {item.name} × {item.quantity} — {(item.price / 100).toFixed(2)} ج.م
+                    {item.name} × {item.quantity} — {(item.price / 100).toFixed(2)} ج.س
                   </p>
                 ))}
               </div>
               <p className="font-bold text-[#8a9a5b]">
-                الإجمالي: {(order.totalAmount / 100).toFixed(2)} ج.م
+                الإجمالي: {(order.totalAmount / 100).toFixed(2)} ج.س
               </p>
             </div>
           ))}
