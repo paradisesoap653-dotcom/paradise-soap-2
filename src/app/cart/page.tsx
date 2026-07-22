@@ -50,7 +50,7 @@ export default function CartPage() {
             <div className="flex-1">
               <h3 className="font-semibold text-[#2e2a24]">{item.name}</h3>
               <p className="text-[#8a9a5b]">
-                {(item.price / 100).toFixed(2)} ج.م
+                {(item.price / 100).toFixed(2)} ج.س
               </p>
             </div>
 
@@ -82,7 +82,7 @@ export default function CartPage() {
 
       <div className="flex items-center justify-between border-t border-[#2e2a24]/10 pt-6">
         <span className="text-xl font-bold text-[#2e2a24]">
-          الإجمالي: {(totalPrice / 100).toFixed(2)} ج.م
+          الإجمالي: {(totalPrice / 100).toFixed(2)} ج.س
         </span>
         <Link
           href="/checkout"
