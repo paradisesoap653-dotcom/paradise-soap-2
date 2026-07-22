@@ -81,27 +81,3 @@ export default async function ProductsPage() {
             <Link
               key={product.id}
               href={`/products/${product.id}`}
-              className="group overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-lg"
-            >
-              <div className="relative h-56 w-full overflow-hidden bg-[#faf6f0]">
-                {product.imageUrl && (
-                  <Image
-                    src={product.imageUrl}
-                    alt={product.nameAr}
-                    fill
-                    className="object-cover transition duration-300 group-hover:scale-105"
-                  />
-                )}
-              </div>
-              <div className="p-5">
-                <h3 className="mb-1 text-lg font-semibold text-[#2e2a24]">{product.nameAr}</h3>
-                <p className="mb-3 text-sm text-[#2e2a24]/60">{product.nameEn}</p>
-                <p className="text-lg font-bold text-[#8a9a5b]">{(product.price / 100).toFixed(2)} ج.م</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
-    </main>
-  );
-}
