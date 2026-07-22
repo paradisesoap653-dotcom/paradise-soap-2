@@ -87,7 +87,7 @@ export default async function ProductDetailPage({
         <div>
           <h1 className="mb-1 text-3xl font-bold text-[#2e2a24]">{product.nameAr}</h1>
           <p className="mb-4 text-lg text-[#2e2a24]/50">{product.nameEn}</p>
-          <p className="mb-6 text-2xl font-bold text-[#8a9a5b]">{(product.price / 100).toFixed(2)} ج.م</p>
+          <p className="mb-6 text-2xl font-bold text-[#8a9a5b]">{(product.price / 100).toFixed(2)} ج.س</p>
           <p className="mb-8 leading-relaxed text-[#2e2a24]/70">{product.descriptionAr}</p>
 
           {product.stock > 0 ? (
