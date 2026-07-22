@@ -112,22 +112,39 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="px-6 py-20">
+      {/* Features Section - إطارات متناسقة للأقسام الثلاثة */}
+      <section className="bg-[#faf6f0] px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <h2 className="mb-12 text-center text-3xl font-bold text-[#2e2a24]">
             ليه تختار Paradise Soap؟
           </h2>
-          <div className="grid gap-8 sm:grid-cols-3">
-            {features.map((f) => (
+          <div className="grid gap-6 sm:grid-cols-3">
+            {features.map((f, idx) => (
               <div
                 key={f.title}
-                className="rounded-2xl bg-[#faf6f0] p-8 text-center"
+                className="group relative rounded-2xl border-2 border-[#8a9a5b]/30 bg-white p-8 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#5f6e3c] hover:shadow-md"
               >
-                <h3 className="mb-2 text-xl font-semibold text-[#5f6e3c]">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[#8a9a5b]/10 text-[#5f6e3c] transition-colors duration-300 group-hover:bg-[#5f6e3c] group-hover:text-white">
+                  {idx === 0 && (
+                    <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  )}
+                  {idx === 1 && (
+                    <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                    </svg>
+                  )}
+                  {idx === 2 && (
+                    <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  )}
+                </div>
+                <h3 className="mb-3 text-xl font-bold text-[#5f6e3c]">
                   {f.title}
                 </h3>
-                <p className="text-[#2e2a24]/70">{f.desc}</p>
+                <p className="text-sm leading-relaxed text-[#2e2a24]/80">{f.desc}</p>
               </div>
             ))}
           </div>
@@ -135,14 +152,14 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="bg-[#faf6f0] px-6 py-20">
+      <section className="bg-white px-6 py-20">
         <div className="mx-auto max-w-5xl">
           <h2 className="mb-12 text-center text-3xl font-bold text-[#2e2a24]">
             آراء عملائنا
           </h2>
           <div className="grid gap-6 sm:grid-cols-3">
             {testimonials.map((t) => (
-              <div key={t.name} className="rounded-2xl bg-white p-6 shadow-sm">
+              <div key={t.name} className="rounded-2xl border border-[#8a9a5b]/20 bg-[#faf6f0] p-6 shadow-sm">
                 <p className="mb-4 text-[#2e2a24]/80">&ldquo;{t.text}&rdquo;</p>
                 <p className="font-semibold text-[#5f6e3c]">{t.name}</p>
               </div>
@@ -151,8 +168,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section className="px-6 py-20">
+      {/* FAQ Section - إطارات ناعمة للأسئلة الشائعة */}
+      <section className="bg-[#faf6f0] px-6 py-20">
         <div className="mx-auto max-w-3xl">
           <h2 className="mb-12 text-center text-3xl font-bold text-[#2e2a24]">
             الأسئلة الشائعة
@@ -161,12 +178,19 @@ export default function HomePage() {
             {faqs.map((f) => (
               <details
                 key={f.q}
-                className="group rounded-xl bg-[#faf6f0] p-5"
+                className="group rounded-2xl border-2 border-[#8a9a5b]/30 bg-white p-6 shadow-sm transition-all duration-300 hover:border-[#5f6e3c] open:border-[#5f6e3c] open:shadow-md"
               >
-                <summary className="cursor-pointer list-none font-semibold text-[#2e2a24]">
-                  {f.q}
+                <summary className="flex cursor-pointer items-center justify-between list-none font-bold text-[#2e2a24] text-lg select-none">
+                  <span>{f.q}</span>
+                  <span className="mr-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#8a9a5b]/15 text-[#5f6e3c] transition-transform duration-300 group-open:rotate-180">
+                    <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </span>
                 </summary>
-                <p className="mt-3 text-[#2e2a24]/70">{f.a}</p>
+                <p className="mt-4 text-[#2e2a24]/80 leading-relaxed border-t border-[#8a9a5b]/20 pt-4 text-base">
+                  {f.a}
+                </p>
               </details>
             ))}
           </div>
@@ -189,7 +213,7 @@ export default function HomePage() {
             تصفح المنتجات
           </Link>
 
-          {/* Contact / Social Icons */}
+          {/* Social Icons inside CTA */}
           <div className="mt-12">
             <p className="mb-4 text-sm font-medium text-white/70">
               تواصل معنا مباشرة
