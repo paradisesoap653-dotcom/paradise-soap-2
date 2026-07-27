@@ -1,0 +1,135 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+export default function SellerRegisterPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [form, setForm] = useState({
+    phone: "",
+    password: "",
+    name: "",
+    storeName: "",
+  });
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/sellers/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "حدث خطأ، حاول مرة أخرى");
+        setLoading(false);
+        return;
+      }
+
+      router.push("/seller/login");
+    } catch (err) {
+      setError("حدث خطأ في الاتصال، حاول مرة أخرى");
+      setLoading(false);
+    }
+  }
+
+  return (
+    <main className="mx-auto max-w-md px-6 py-16" dir="rtl">
+      <h1 className="mb-2 text-2xl font-bold text-[#2e2a24]">
+        انضم كبائع
+      </h1>
+      <p className="mb-8 text-sm text-[#2e2a24]/60">
+        سجل حسابك عشان تقدر تضيف منتجاتك على المنصة
+      </p>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
+            الاسم
+          </label>
+          <input
+            required
+            type="text"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            className="w-full rounded-lg border border-[#2e2a24]/20 px-4 py-2"
+            placeholder="اسمك الكامل"
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
+            اسم المتجر (اختياري)
+          </label>
+          <input
+            type="text"
+            value={form.storeName}
+            onChange={(e) => setForm({ ...form, storeName: e.target.value })}
+            className="w-full rounded-lg border border-[#2e2a24]/20 px-4 py-2"
+            placeholder="اسم متجرك"
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
+            رقم التليفون
+          </label>
+          <input
+            required
+            type="tel"
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            className="w-full rounded-lg border border-[#2e2a24]/20 px-4 py-2"
+            placeholder="09xxxxxxxx"
+            dir="ltr"
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
+            كلمة السر
+          </label>
+          <input
+            required
+            type="password"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            className="w-full rounded-lg border border-[#2e2a24]/20 px-4 py-2"
+            placeholder="6 أحرف على الأقل"
+            dir="ltr"
+          />
+        </div>
+
+        {error && (
+          <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">
+            {error}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded-full bg-[#8a9a5b] px-6 py-3 font-medium text-white hover:bg-[#5f6e3c] disabled:opacity-50"
+        >
+          {loading ? "جاري إنشاء الحساب..." : "إنشاء حساب"}
+        </button>
+      </form>
+
+      <p className="mt-6 text-center text-sm text-[#2e2a24]/60">
+        عندك حساب بالفعل؟{" "}
+        <Link href="/seller/login" className="font-medium text-[#8a9a5b]">
+          سجل دخول
+        </Link>
+      </p>
+    </main>
+  );
+}
