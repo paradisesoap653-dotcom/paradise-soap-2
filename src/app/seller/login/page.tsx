@@ -1,0 +1,105 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+export default function SellerLoginPage() {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [form, setForm] = useState({
+    phone: "",
+    password: "",
+  });
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      const res = await fetch("/api/sellers/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "حدث خطأ، حاول مرة أخرى");
+        setLoading(false);
+        return;
+      }
+
+      router.push("/seller/dashboard");
+    } catch (err) {
+      setError("حدث خطأ في الاتصال، حاول مرة أخرى");
+      setLoading(false);
+    }
+  }
+
+  return (
+    <main className="mx-auto max-w-md px-6 py-16" dir="rtl">
+      <h1 className="mb-2 text-2xl font-bold text-[#2e2a24]">
+        تسجيل دخول البائع
+      </h1>
+      <p className="mb-8 text-sm text-[#2e2a24]/60">
+        سجل دخولك عشان تدير منتجاتك
+      </p>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div>
+          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
+            رقم التليفون
+          </label>
+          <input
+            required
+            type="tel"
+            value={form.phone}
+            onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            className="w-full rounded-lg border border-[#2e2a24]/20 px-4 py-2"
+            placeholder="09xxxxxxxx"
+            dir="ltr"
+          />
+        </div>
+
+        <div>
+          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
+            كلمة السر
+          </label>
+          <input
+            required
+            type="password"
+            value={form.password}
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+            className="w-full rounded-lg border border-[#2e2a24]/20 px-4 py-2"
+            dir="ltr"
+          />
+        </div>
+
+        {error && (
+          <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">
+            {error}
+          </p>
+        )}
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded-full bg-[#8a9a5b] px-6 py-3 font-medium text-white hover:bg-[#5f6e3c] disabled:opacity-50"
+        >
+          {loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+        </button>
+      </form>
+
+      <p className="mt-6 text-center text-sm text-[#2e2a24]/60">
+        لسه معندكش حساب؟{" "}
+        <Link href="/seller/register" className="font-medium text-[#8a9a5b]">
+          سجل كبائع جديد
+        </Link>
+      </p>
+    </main>
+  );
+}
