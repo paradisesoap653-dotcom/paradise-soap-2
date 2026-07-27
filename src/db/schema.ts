@@ -8,8 +8,19 @@ import {
   boolean,
 } from "drizzle-orm/pg-core";
 
+export const sellers = pgTable("sellers", {
+  id: serial("id").primaryKey(),
+  phone: text("phone").notNull().unique(),
+  passwordHash: text("password_hash").notNull(),
+  name: text("name").notNull(),
+  storeName: text("store_name"),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
+  sellerId: integer("seller_id").references(() => sellers.id),
   nameAr: text("name_ar").notNull(),
   nameEn: text("name_en").notNull(),
   descriptionAr: text("description_ar"),
