@@ -8,6 +8,7 @@ import { useCart } from "@/context/CartContext";
 export default function Header() {
   const { totalItems } = useCart();
   const [installPrompt, setInstallPrompt] = useState<any>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
@@ -84,6 +85,54 @@ export default function Header() {
               </span>
             )}
           </Link>
+
+          <div className="relative">
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-[#8a9a5b]/10 text-[#2e2a24] hover:bg-[#8a9a5b]/20 transition"
+              aria-label="القائمة"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="3" y1="6" x2="21" y2="6" />
+                <line x1="3" y1="12" x2="21" y2="12" />
+                <line x1="3" y1="18" x2="21" y2="18" />
+              </svg>
+            </button>
+
+            {menuOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setMenuOpen(false)}
+                />
+                <div className="absolute left-0 top-14 z-50 w-56 overflow-hidden rounded-2xl border border-[#2e2a24]/10 bg-white shadow-lg" dir="rtl">
+                  <Link
+                    href="/seller/register"
+                    onClick={() => setMenuOpen(false)}
+                    className="block px-5 py-3 text-sm font-medium text-[#8a9a5b] hover:bg-[#8a9a5b]/10"
+                  >
+                    + انضم كبائع
+                  </Link>
+                  <div className="border-t border-[#2e2a24]/10" />
+                  <Link
+                    href="/seller/login"
+                    onClick={() => setMenuOpen(false)}
+                    className="block px-5 py-3 text-sm text-[#2e2a24] hover:bg-[#8a9a5b]/10"
+                  >
+                    دخول البائعين
+                  </Link>
+                  <div className="border-t border-[#2e2a24]/10" />
+                  <Link
+                    href="/admin/login"
+                    onClick={() => setMenuOpen(false)}
+                    className="block px-5 py-3 text-sm text-[#2e2a24]/60 hover:bg-[#8a9a5b]/10"
+                  >
+                    دخول الإدارة
+                  </Link>
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </header>
