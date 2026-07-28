@@ -3,6 +3,7 @@ import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import AddToCartButton from "@/components/AddToCartButton";
+import QuickOrderButton from "@/components/QuickOrderButton";
 
 const mockProducts = [
   {
@@ -91,7 +92,14 @@ export default async function ProductDetailPage({
           <p className="mb-8 leading-relaxed text-[#2e2a24]/70">{product.descriptionAr}</p>
 
           {product.stock > 0 ? (
-            <AddToCartButton product={product} />
+            <div className="space-y-3">
+              <AddToCartButton product={product} />
+              <QuickOrderButton
+                productId={product.id}
+                productName={product.nameAr}
+                price={product.price}
+              />
+            </div>
           ) : (
             <p className="font-medium text-red-600">نفذت الكمية حاليًا</p>
           )}
