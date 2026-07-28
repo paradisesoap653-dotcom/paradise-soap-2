@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const isLoginPage = request.nextUrl.pathname === "/admin/login";
 
   if (isLoginPage) {
@@ -17,7 +17,7 @@ export function middleware(request: NextRequest) {
   }
 
   try {
-    jwt.verify(token, secret);
+    await jwtVerify(token, new TextEncoder().encode(secret));
     return NextResponse.next();
   } catch (err) {
     return NextResponse.redirect(new URL("/admin/login", request.url));
