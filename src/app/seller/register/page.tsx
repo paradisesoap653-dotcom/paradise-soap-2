@@ -4,6 +4,21 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
+// يحول أي شكل يكتبه المستخدم للرقم المحلي (بيشيل +249 أو 249 أو الصفر الأول لو موجودين)
+// ويرجع الرقم بصيغة دولية كاملة جاهزة لـ Twilio: +249XXXXXXXXX
+function normalizePhone(input: string): string {
+  let digits = input.replace(/[^\d]/g, ""); // يشيل أي حروف أو رموز غير أرقام
+
+  if (digits.startsWith("249")) {
+    digits = digits.slice(3);
+  }
+  if (digits.startsWith("0")) {
+    digits = digits.slice(1);
+  }
+
+  return `+249${digits}`;
+}
+
 export default function SellerRegisterPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -18,13 +33,23 @@ export default function SellerRegisterPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    const fullPhone = normalizePhone(form.phone);
+
+    // تحقق بسيط: لازم 9 أرقام بعد +249 (أرقام السودان المحلية 9 خانات بعد الصفر)
+    const localDigits = fullPhone.replace("+249", "");
+    if (localDigits.length !== 9) {
+      setError("رقم الهاتف غير صحيح، تأكد إنك كتبته كامل من غير رمز الدولة");
+      return;
+    }
+
     setLoading(true);
 
     try {
       const res = await fetch("/api/sellers/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, phone: fullPhone }),
       });
 
       const data = await res.json();
@@ -83,53 +108,19 @@ export default function SellerRegisterPage() {
           <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
             رقم التليفون
           </label>
-          <input
-            required
-            type="tel"
-            value={form.phone}
-            onChange={(e) => setForm({ ...form, phone: e.target.value })}
-            className="w-full rounded-lg border border-[#2e2a24]/20 px-4 py-2"
-            placeholder="09xxxxxxxx"
-            dir="ltr"
-          />
-        </div>
-
-        <div>
-          <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
-            كلمة السر
-          </label>
-          <input
-            required
-            type="password"
-            value={form.password}
-            onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="w-full rounded-lg border border-[#2e2a24]/20 px-4 py-2"
-            placeholder="6 أحرف على الأقل"
-            dir="ltr"
-          />
-        </div>
-
-        {error && (
-          <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">
-            {error}
-          </p>
-        )}
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full rounded-full bg-[#8a9a5b] px-6 py-3 font-medium text-white hover:bg-[#5f6e3c] disabled:opacity-50"
-        >
-          {loading ? "جاري إنشاء الحساب..." : "إنشاء حساب"}
-        </button>
-      </form>
-
-      <p className="mt-6 text-center text-sm text-[#2e2a24]/60">
-        عندك حساب بالفعل؟{" "}
-        <Link href="/seller/login" className="font-medium text-[#8a9a5b]">
-          سجل دخول
-        </Link>
-      </p>
-    </main>
-  );
-}
+          <div className="flex overflow-hidden rounded-lg border border-[#2e2a24]/20" dir="ltr">
+            <span className="flex items-center bg-[#2e2a24]/5 px-3 text-sm font-medium text-[#2e2a24]/70">
+              +249
+            </span>
+            <input
+              required
+              type="tel"
+              value={form.phone}
+              onChange={(e) => setForm({ ...form, phone: e.target.value })}
+              className="w-full px-4 py-2 outline-none"
+              placeholder="9xxxxxxxx"
+              dir="ltr"
+            />
+          </div>
+          <p className="mt-1 text-xs text-[#2e2a24]/50">
+            اكتب رقمك من غير الصفر أو رمز الدولة، مثال: 913009060
