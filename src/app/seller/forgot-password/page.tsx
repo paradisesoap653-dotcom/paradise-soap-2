@@ -90,17 +90,22 @@ export default function ForgotPasswordPage() {
               <label className="mb-1 block text-sm font-medium text-[#2e2a24]">
                 رقم التليفون
               </label>
-              <input
-                required
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full rounded-lg border border-[#2e2a24]/20 px-4 py-2"
-                placeholder="+218913009060"
-                dir="ltr"
-              />
+              <div className="flex overflow-hidden rounded-lg border border-[#2e2a24]/20" dir="ltr">
+                <span className="flex items-center bg-[#2e2a24]/5 px-3 text-sm font-medium text-[#2e2a24]/70">
+                  +249
+                </span>
+                <input
+                  required
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full px-4 py-2 outline-none"
+                  placeholder="9xxxxxxxx"
+                  dir="ltr"
+                />
+              </div>
               <p className="mt-1 text-xs text-[#2e2a24]/50">
-                اكتب الرقم بالصيغة الدولية كاملة (بعلامة + ورمز الدولة)
+                اكتب رقمك من غير الصفر أو رمز الدولة، مثال: 913009060
               </p>
             </div>
 
