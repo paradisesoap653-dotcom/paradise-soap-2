@@ -1,8 +1,23 @@
+
 import { NextResponse } from "next/server";
 import { getDb } from "@/db";
 import { sellers } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
+
+// يحول أي شكل يكتبه المستخدم للصيغة الدولية الكاملة: +249XXXXXXXXX
+function normalizePhone(input: string): string {
+  let digits = input.replace(/[^\d]/g, "");
+
+  if (digits.startsWith("249")) {
+    digits = digits.slice(3);
+  }
+  if (digits.startsWith("0")) {
+    digits = digits.slice(1);
+  }
+
+  return `+249${digits}`;
+}
 
 export async function POST(request: Request) {
   try {
@@ -23,12 +38,22 @@ export async function POST(request: Request) {
       );
     }
 
+    const normalizedPhone = normalizePhone(phone);
+    const localDigits = normalizedPhone.replace("+249", "");
+
+    if (localDigits.length !== 9) {
+      return NextResponse.json(
+        { error: "رقم التليفون غير صحيح" },
+        { status: 400 }
+      );
+    }
+
     const db = getDb();
 
     const existing = await db
       .select()
       .from(sellers)
-      .where(eq(sellers.phone, phone));
+      .where(eq(sellers.phone, normalizedPhone));
 
     if (existing.length > 0) {
       return NextResponse.json(
@@ -42,7 +67,7 @@ export async function POST(request: Request) {
     const [newSeller] = await db
       .insert(sellers)
       .values({
-        phone,
+        phone: normalizedPhone,
         passwordHash,
         name,
         storeName: storeName || null,
