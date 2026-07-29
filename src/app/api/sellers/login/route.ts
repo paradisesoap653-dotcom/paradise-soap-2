@@ -5,6 +5,20 @@ import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+// يحول أي شكل يكتبه المستخدم للصيغة الدولية الكاملة: +249XXXXXXXXX
+function normalizePhone(input: string): string {
+  let digits = input.replace(/[^\d]/g, "");
+
+  if (digits.startsWith("249")) {
+    digits = digits.slice(3);
+  }
+  if (digits.startsWith("0")) {
+    digits = digits.slice(1);
+  }
+
+  return `+249${digits}`;
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -17,12 +31,14 @@ export async function POST(request: Request) {
       );
     }
 
+    const normalizedPhone = normalizePhone(phone);
+
     const db = getDb();
 
     const [seller] = await db
       .select()
       .from(sellers)
-      .where(eq(sellers.phone, phone));
+      .where(eq(sellers.phone, normalizedPhone));
 
     if (!seller) {
       return NextResponse.json(
