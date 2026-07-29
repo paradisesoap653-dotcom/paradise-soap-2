@@ -47,6 +47,7 @@ export async function POST(request: Request) {
         price: body.price,
         imageUrl: body.imageUrl || null,
         stock: body.stock || 0,
+        isActive: false,
       })
       .returning();
 
