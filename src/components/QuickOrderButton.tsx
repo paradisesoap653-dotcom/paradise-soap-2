@@ -19,13 +19,15 @@ export default function QuickOrderButton({
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [error, setError] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setError("");
     setLoading(true);
 
     try {
-      await fetch("/api/orders", {
+      const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -37,19 +39,27 @@ export default function QuickOrderButton({
           items: [{ productId, name: productName, price, quantity: 1 }],
         }),
       });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error || "تعذر حفظ الطلب، حاول مرة أخرى");
+        setLoading(false);
+        return;
+      }
+
+      const message = `مرحباً، أريد طلب: ${productName} - السعر: ${(price / 100).toFixed(2)} ج.س\nالاسم: ${name}\nرقم التليفون: ${phone}`;
+      const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+      window.open(url, "_blank");
+
+      setShowForm(false);
+      setName("");
+      setPhone("");
     } catch (err) {
-      console.warn("Quick order save failed:", err);
+      setError("حدث خطأ في الاتصال، حاول مرة أخرى");
     } finally {
       setLoading(false);
     }
-
-    const message = `مرحباً، أريد طلب: ${productName} - السعر: ${(price / 100).toFixed(2)} ج.س\nالاسم: ${name}\nرقم التليفون: ${phone}`;
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank");
-
-    setShowForm(false);
-    setName("");
-    setPhone("");
   }
 
   if (!showForm) {
@@ -87,22 +97,6 @@ export default function QuickOrderButton({
         dir="ltr"
         className="w-full rounded-lg border border-[#2e2a24]/20 px-4 py-2"
       />
-      <div className="flex gap-2">
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex-1 rounded-full bg-[#25D366] px-6 py-2.5 font-medium text-white disabled:opacity-50"
-        >
-          {loading ? "جاري الإرسال..." : "إرسال عبر واتساب"}
-        </button>
-        <button
-          type="button"
-          onClick={() => setShowForm(false)}
-          className="rounded-full bg-white px-5 py-2.5 font-medium text-[#2e2a24] border border-[#2e2a24]/20"
-        >
-          إلغاء
-        </button>
-      </div>
-    </form>
-  );
-}
+
+      {error && (
+        <p className="rounded-lg bg-red-50 px-4 py-2 te
