@@ -97,6 +97,27 @@ export default function AdminPage() {
     loadProducts();
   }
 
+  async function handleApprove(id: number) {
+    await fetch("/api/products", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, isActive: true }),
+    });
+    loadProducts();
+  }
+
+  async function handleUnapprove(id: number) {
+    await fetch("/api/products", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, isActive: false }),
+    });
+    loadProducts();
+  }
+
+  const pendingProducts = products.filter((p) => !p.isActive);
+  const activeProducts = products.filter((p) => p.isActive);
+
   return (
     <main className="mx-auto max-w-5xl px-6 py-12">
       <div className="mb-8 flex items-center justify-between">
@@ -164,7 +185,6 @@ export default function AdminPage() {
             />
           </div>
 
-          {/* Image Upload */}
           <div className="rounded-lg border border-dashed border-[#2e2a24]/30 p-4">
             <label className="mb-2 block text-sm font-medium text-[#2e2a24]">
               صورة المنتج
@@ -203,27 +223,86 @@ export default function AdminPage() {
       {loading ? (
         <p className="text-[#2e2a24]/60">جاري التحميل...</p>
       ) : (
-        <div className="space-y-3">
-          {products.map((p) => (
-            <div
-              key={p.id}
-              className="flex items-center justify-between rounded-xl bg-[#faf6f0] p-4"
-            >
-              <div>
-                <p className="font-semibold text-[#2e2a24]">{p.nameAr}</p>
-                <p className="text-sm text-[#2e2a24]/60">
-                  {(p.price / 100).toFixed(2)} ج.س · مخزون: {p.stock}
-                </p>
+        <>
+          {pendingProducts.length > 0 && (
+            <div className="mb-10">
+              <h2 className="mb-4 text-lg font-bold text-[#8a9a5b]">
+                بانتظار الموافقة ({pendingProducts.length})
+              </h2>
+              <div className="space-y-3">
+                {pendingProducts.map((p) => (
+                  <div
+                    key={p.id}
+                    className="flex items-center justify-between rounded-xl border-2 border-[#8a9a5b]/30 bg-[#8a9a5b]/5 p-4"
+                  >
+                    <div className="flex items-center gap-3">
+                      {p.imageUrl && (
+                        <img
+                          src={p.imageUrl}
+                          alt={p.nameAr}
+                          className="h-12 w-12 rounded-lg object-cover"
+                        />
+                      )}
+                      <div>
+                        <p className="font-semibold text-[#2e2a24]">{p.nameAr}</p>
+                        <p className="text-sm text-[#2e2a24]/60">
+                          {(p.price / 100).toFixed(2)} ج.س · مخزون: {p.stock}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleApprove(p.id)}
+                        className="rounded-full bg-[#8a9a5b] px-4 py-1.5 text-sm font-medium text-white hover:bg-[#5f6e3c]"
+                      >
+                        موافقة
+                      </button>
+                      <button
+                        onClick={() => handleDelete(p.id)}
+                        className="text-sm text-red-500 hover:underline"
+                      >
+                        حذف
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <button
-                onClick={() => handleDelete(p.id)}
-                className="text-sm text-red-500 hover:underline"
-              >
-                حذف
-              </button>
             </div>
-          ))}
-        </div>
+          )}
+
+          <h2 className="mb-4 text-lg font-bold text-[#2e2a24]">
+            المنتجات المنشورة ({activeProducts.length})
+          </h2>
+          <div className="space-y-3">
+            {activeProducts.map((p) => (
+              <div
+                key={p.id}
+                className="flex items-center justify-between rounded-xl bg-[#faf6f0] p-4"
+              >
+                <div>
+                  <p className="font-semibold text-[#2e2a24]">{p.nameAr}</p>
+                  <p className="text-sm text-[#2e2a24]/60">
+                    {(p.price / 100).toFixed(2)} ج.س · مخزون: {p.stock}
+                  </p>
+                </div>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => handleUnapprove(p.id)}
+                    className="text-sm text-[#2e2a24]/50 hover:underline"
+                  >
+                    إخفاء
+                  </button>
+                  <button
+                    onClick={() => handleDelete(p.id)}
+                    className="text-sm text-red-500 hover:underline"
+                  >
+                    حذف
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
     </main>
   );
