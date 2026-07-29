@@ -48,6 +48,18 @@ export const orders = pgTable("orders", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
+// عناصر كل طلب، مرتبطة بالبائع صاحب المنتج - عشان كل بائع يشوف طلباته هو بس
+export const orderItems = pgTable("order_items", {
+  id: serial("id").primaryKey(),
+  orderId: integer("order_id").notNull().references(() => orders.id),
+  sellerId: integer("seller_id").references(() => sellers.id),
+  productId: integer("product_id").notNull().references(() => products.id),
+  name: text("name").notNull(),
+  price: integer("price").notNull(),
+  quantity: integer("quantity").notNull(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+});
+
 export const otpCodes = pgTable("otp_codes", {
   id: serial("id").primaryKey(),
   phone: text("phone").notNull(),
