@@ -1,98 +1,107 @@
-import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
-import { getDb } from "@/db";
 import { products } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
-import jwt from "jsonwebtoken";
+import { eq } from "drizzle-orm";
+import Link from "next/link";
+import Image from "next/image";
 
-async function getSellerIdFromToken(): Promise<number | null> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("seller_token")?.value;
+export const dynamic = "force-dynamic";
 
-  if (!token) return null;
+const mockProducts = [
+  {
+    id: 1,
+    nameAr: "صابون العسل والزعفران",
+    nameEn: "Honey & Saffron Soap",
+    descriptionAr: "صابون طبيعي فاخر بخلاصة العسل والزعفران، يمنح بشرتك نعومة ولمعان طبيعي.",
+    descriptionEn: "A luxurious natural soap infused with honey and saffron extract for soft, radiant skin.",
+    price: 12000,
+    imageUrl: "https://images.unsplash.com/photo-1600857062241-98e5dba7f214?w=800",
+    category: "soap",
+    stock: 50,
+    isActive: true,
+  },
+  {
+    id: 2,
+    nameAr: "صابون زيت الزيتون الكلاسيكي",
+    nameEn: "Classic Olive Oil Soap",
+    descriptionAr: "صابون تقليدي مصنوع من زيت الزيتون البكر الممتاز، مثالي للبشرة الحساسة.",
+    descriptionEn: "Traditional soap crafted from extra virgin olive oil, perfect for sensitive skin.",
+    price: 9000,
+    imageUrl: "https://images.unsplash.com/photo-1571781926291-c477ebfd024b?w=800",
+    category: "soap",
+    stock: 80,
+    isActive: true,
+  },
+  {
+    id: 3,
+    nameAr: "صابون اللافندر المهدئ",
+    nameEn: "Calming Lavender Soap",
+    descriptionAr: "برائحة اللافندر المنعشة، يساعد على الاسترخاء ويترك بشرتك منتعشة طوال اليوم.",
+    descriptionEn: "With a refreshing lavender scent, helps you relax and keeps your skin fresh all day.",
+    price: 10000,
+    imageUrl: "https://images.unsplash.com/photo-1614806687209-1e0a5b6b5a3f?w=800",
+    category: "soap",
+    stock: 60,
+    isActive: true,
+  },
+];
 
-  const secret = process.env.JWT_SECRET;
-  if (!secret) return null;
+export default async function ProductsPage() {
+  let allProducts = mockProducts;
 
+  // Try to load from DB at runtime; if it fails or DATABASE_URL is not set, fall back to mock data
   try {
-    const decoded = jwt.verify(token, secret) as {
-      sellerId: number;
-      phone: string;
-    };
-    return decoded.sellerId;
-  } catch (err) {
-    return null;
-  }
-}
+    if (process.env.DATABASE_URL) {
+      const { getDb } = await import("@/db");
+      const db = getDb();
+      const rows = await db
+        .select()
+        .from(products)
+        .where(eq(products.isActive, true));
 
-export async function POST(request: Request) {
-  try {
-    const sellerId = await getSellerIdFromToken();
-
-    if (!sellerId) {
-      return NextResponse.json({ error: "غير مسجل دخول" }, { status: 401 });
+      if (Array.isArray(rows) && rows.length > 0) {
+        allProducts = rows as typeof mockProducts;
+      }
     }
-
-    const body = await request.json();
-    const db = getDb();
-
-    const [newProduct] = await db
-      .insert(products)
-      .values({
-        sellerId,
-        nameAr: body.nameAr,
-        nameEn: body.nameEn,
-        descriptionAr: body.descriptionAr || null,
-        descriptionEn: body.descriptionEn || null,
-        price: body.price,
-        imageUrl: body.imageUrl || null,
-        stock: body.stock || 0,
-        isActive: false, // المنتج يفضل مخفي لحد ما الإدارة توافق عليه
-      })
-      .returning();
-
-    return NextResponse.json(newProduct);
   } catch (err) {
-    console.error("POST /api/sellers/products failed:", err);
-    return NextResponse.json(
-      { error: "فشل حفظ المنتج" },
-      { status: 500 }
-    );
+    // keep mockProducts as fallback
+    console.warn("Products DB fetch failed, using mock products:", err);
   }
-}
 
-export async function DELETE(request: Request) {
-  try {
-    const sellerId = await getSellerIdFromToken();
+  return (
+    <main className="mx-auto max-w-6xl px-6 py-16">
+      <div className="mb-12 text-center">
+        <h1 className="mb-3 text-3xl font-bold text-[#2e2a24]">منتجاتنا</h1>
+        <p className="text-[#2e2a24]/70">تشكيلة Paradise Soap الكاملة من الصابون الطبيعي الفاخر</p>
+      </div>
 
-    if (!sellerId) {
-      return NextResponse.json({ error: "غير مسجل دخول" }, { status: 401 });
-    }
-
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get("id");
-
-    if (!id) {
-      return NextResponse.json(
-        { error: "معرف المنتج مطلوب" },
-        { status: 400 }
-      );
-    }
-
-    const db = getDb();
-
-    await db
-      .delete(products)
-      .where(
-        and(eq(products.id, parseInt(id, 10)), eq(products.sellerId, sellerId))
-      );
-
-    return NextResponse.json({ success: true });
-  } catch (err) {
-    console.error("DELETE /api/sellers/products failed:", err);
-    return NextResponse.json(
-      { error: "فشل حذف المنتج" },
-      { status: 500 }
-    );
-  }
+      {allProducts.length === 0 ? (
+        <p className="text-center text-[#2e2a24]/60">لا توجد منتجات متاحة حاليًا.</p>
+      ) : (
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {allProducts.map((product) => (
+            <Link
+              key={product.id}
+              href={`/products/${product.id}`}
+              className="group overflow-hidden rounded-2xl bg-white shadow-sm transition hover:shadow-lg"
+            >
+              <div className="relative h-56 w-full overflow-hidden bg-[#faf6f0]">
+                {product.imageUrl && (
+                  <Image
+                    src={product.imageUrl}
+                    alt={product.nameAr}
+                    fill
+                    className="object-cover transition duration-300 group-hover:scale-105"
+                  />
+                )}
+              </div>
+              <div className="p-5">
+                <h3 className="mb-1 text-lg font-semibold text-[#2e2a24]">{product.nameAr}</h3>
+                <p className="mb-3 text-sm text-[#2e2a24]/60">{product.nameEn}</p>
+                <p className="text-lg font-bold text-[#8a9a5b]">{(product.price / 100).toFixed(2)} ج.س</p>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </main>
+  );
 }
