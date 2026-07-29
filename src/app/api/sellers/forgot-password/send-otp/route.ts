@@ -4,6 +4,20 @@ import { sellers, otpCodes } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import twilio from "twilio";
 
+// يحول أي شكل يكتبه المستخدم للصيغة الدولية الكاملة: +249XXXXXXXXX
+function normalizePhone(input: string): string {
+  let digits = input.replace(/[^\d]/g, "");
+
+  if (digits.startsWith("249")) {
+    digits = digits.slice(3);
+  }
+  if (digits.startsWith("0")) {
+    digits = digits.slice(1);
+  }
+
+  return `+249${digits}`;
+}
+
 export async function POST(request: Request) {
   try {
     const { phone } = await request.json();
@@ -15,12 +29,14 @@ export async function POST(request: Request) {
       );
     }
 
+    const normalizedPhone = normalizePhone(phone);
+
     const db = getDb();
 
     const [seller] = await db
       .select()
       .from(sellers)
-      .where(eq(sellers.phone, phone));
+      .where(eq(sellers.phone, normalizedPhone));
 
     if (!seller) {
       return NextResponse.json(
@@ -33,7 +49,7 @@ export async function POST(request: Request) {
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 دقائق
 
     await db.insert(otpCodes).values({
-      phone,
+      phone: normalizedPhone,
       code,
       expiresAt,
     });
@@ -54,7 +70,7 @@ export async function POST(request: Request) {
     await client.messages.create({
       body: `رمز التحقق الخاص بك في Paradise Soap هو: ${code}`,
       from: fromNumber,
-      to: phone,
+      to: normalizedPhone,
     });
 
     return NextResponse.json({ success: true });
