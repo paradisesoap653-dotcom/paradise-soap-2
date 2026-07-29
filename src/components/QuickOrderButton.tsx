@@ -99,4 +99,27 @@ export default function QuickOrderButton({
       />
 
       {error && (
-        <p className="rounded-lg bg-red-50 px-4 py-2 te
+        <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-600">
+          {error}
+        </p>
+      )}
+
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          disabled={loading}
+          className="flex-1 rounded-full bg-[#25D366] px-6 py-2.5 font-medium text-white disabled:opacity-50"
+        >
+          {loading ? "جاري الإرسال..." : "إرسال عبر واتساب"}
+        </button>
+        <button
+          type="button"
+          onClick={() => setShowForm(false)}
+          className="rounded-full bg-white px-5 py-2.5 font-medium text-[#2e2a24] border border-[#2e2a24]/20"
+        >
+          إلغاء
+        </button>
+      </div>
+    </form>
+  );
+}
