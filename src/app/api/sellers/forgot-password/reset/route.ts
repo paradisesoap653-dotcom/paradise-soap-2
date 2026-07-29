@@ -4,6 +4,20 @@ import { sellers, otpCodes } from "@/db/schema";
 import { eq, and, gt } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 
+// يحول أي شكل يكتبه المستخدم للصيغة الدولية الكاملة: +249XXXXXXXXX
+function normalizePhone(input: string): string {
+  let digits = input.replace(/[^\d]/g, "");
+
+  if (digits.startsWith("249")) {
+    digits = digits.slice(3);
+  }
+  if (digits.startsWith("0")) {
+    digits = digits.slice(1);
+  }
+
+  return `+249${digits}`;
+}
+
 export async function POST(request: Request) {
   try {
     const { phone, code, newPassword } = await request.json();
@@ -22,6 +36,8 @@ export async function POST(request: Request) {
       );
     }
 
+    const normalizedPhone = normalizePhone(phone);
+
     const db = getDb();
 
     const [otpRecord] = await db
@@ -29,7 +45,7 @@ export async function POST(request: Request) {
       .from(otpCodes)
       .where(
         and(
-          eq(otpCodes.phone, phone),
+          eq(otpCodes.phone, normalizedPhone),
           eq(otpCodes.code, code),
           eq(otpCodes.used, false),
           gt(otpCodes.expiresAt, new Date())
@@ -50,7 +66,7 @@ export async function POST(request: Request) {
     await db
       .update(sellers)
       .set({ passwordHash })
-      .where(eq(sellers.phone, phone));
+      .where(eq(sellers.phone, normalizedPhone));
 
     await db
       .update(otpCodes)
