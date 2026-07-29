@@ -47,3 +47,6 @@ export const orders = pgTable("orders", {
   status: text("status").notNull().default("pending"),
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
+
+export const otpCodes = pgTable("otp_codes", {
+  id: serial("id").primary
