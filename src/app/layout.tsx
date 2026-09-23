@@ -3,6 +3,7 @@ import "./globals.css";
 import { CartProvider } from "@/context/CartContext";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Paradise Soap | صابون طبيعية فاخرة",
@@ -34,6 +35,7 @@ export default function RootLayout({
           {children}
           <Footer />
         </CartProvider>
+        <Analytics />
       </body>
     </html>
   );
